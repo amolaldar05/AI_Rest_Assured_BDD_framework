@@ -1,4 +1,4 @@
-package org.utility;
+package org.fintech.utility;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
