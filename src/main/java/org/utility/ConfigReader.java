@@ -9,9 +9,9 @@ public class ConfigReader {
 
     static {
         try {
-            FileInputStream fis = new FileInputStream("src/main/resources/config/config.properties");
+            FileInputStream fis = new FileInputStream(ConfigReader.class.getClassLoader().getResource("config/config.properties").getFile());
             properties.load(fis);
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             throw new RuntimeException("Failed to load config.properties", e);
         }
     }
@@ -20,4 +20,3 @@ public class ConfigReader {
         return properties.getProperty(key);
     }
 }
-
