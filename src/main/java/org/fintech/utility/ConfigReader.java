@@ -1,4 +1,4 @@
-package org.utility;
+package org.fintech.utility;
 
 import java.io.FileInputStream;
 import java.io.IOException;

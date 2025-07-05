@@ -1,4 +1,4 @@
-package org.utility;
+package org.fintech.utility;
 
 public enum ApiResource {
     // User and Account Endpoints

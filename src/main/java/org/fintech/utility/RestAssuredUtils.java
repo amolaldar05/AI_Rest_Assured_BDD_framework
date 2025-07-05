@@ -1,4 +1,4 @@
-package org.utility;
+package org.fintech.utility;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;

@@ -7,6 +7,8 @@ import io.cucumber.datatable.DataTable;
 import java.util.List;
 import java.util.Map;
 import static org.junit.Assert.*;
+
+import org.fintech.utility.ConfigReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +36,7 @@ public class PaymentGatewaySteps {
 
     @Given("the payment gateway API base URL is set")
     public void paymentGatewayApiBaseUrlIsSet() {
-        String baseUrl = org.utility.ConfigReader.get("paymentGatewayBaseUrl");
+        String baseUrl = ConfigReader.get("paymentGatewayBaseUrl");
         logger.info("Loaded payment gateway base URL: {}", baseUrl);
         assertNotNull("Base URL should be set in config.properties", baseUrl);
     }
