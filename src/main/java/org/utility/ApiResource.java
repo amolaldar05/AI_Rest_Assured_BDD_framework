@@ -1,4 +1,4 @@
-package org.fintech.utility;
+package org.utility;
 
 public enum ApiResource {
     USERS("/users"),
