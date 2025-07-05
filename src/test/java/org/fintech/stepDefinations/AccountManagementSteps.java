@@ -4,8 +4,8 @@ import io.cucumber.java.en.*;
 import io.restassured.response.Response;
 import io.restassured.RestAssured;
 import io.cucumber.datatable.DataTable;
-import org.utility.ApiResource;
-import org.utility.ConfigReader;
+import org.fintech.utility.ApiResource;
+import org.fintech.utility.ConfigReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
