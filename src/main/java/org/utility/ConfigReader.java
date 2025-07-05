@@ -1,4 +1,4 @@
-package org.fintech.utility;
+package org.utility;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,7 +9,7 @@ public class ConfigReader {
 
     static {
         try {
-            FileInputStream fis = new FileInputStream("src/test/resources/config/config.properties");
+            FileInputStream fis = new FileInputStream("src/main/resources/config/config.properties");
             properties.load(fis);
         } catch (IOException e) {
             throw new RuntimeException("Failed to load config.properties", e);
