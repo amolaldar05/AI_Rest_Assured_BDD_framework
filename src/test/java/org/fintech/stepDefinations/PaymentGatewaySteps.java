@@ -7,6 +7,8 @@ import io.cucumber.datatable.DataTable;
 import java.util.List;
 import java.util.Map;
 import static org.junit.Assert.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PaymentGatewaySteps {
     private int responseStatusCode;
@@ -21,27 +23,33 @@ public class PaymentGatewaySteps {
     private boolean timeoutOccurred = false;
     private boolean idempotencyKeyUsed = false;
     private String redirectUrl;
+    private List<String> supportedPaymentModes;
+    private static final Logger logger = LoggerFactory.getLogger(PaymentGatewaySteps.class);
 
     @Given("the payment gateway is available")
     public void paymentGatewayIsAvailable() {
-        // Simulate payment gateway availability
+        logger.info("Checking payment gateway availability");
         responseStatusCode = 200;
     }
 
     @Given("the payment gateway API base URL is set")
     public void paymentGatewayApiBaseUrlIsSet() {
-        // Simulate setting base URL
+        String baseUrl = org.utility.ConfigReader.get("paymentGatewayBaseUrl");
+        logger.info("Loaded payment gateway base URL: {}", baseUrl);
+        assertNotNull("Base URL should be set in config.properties", baseUrl);
     }
 
     @Given("the following payment modes are supported:")
     public void paymentModesSupported(DataTable dataTable) {
-        // Simulate supported payment modes
+        supportedPaymentModes = dataTable.asList(String.class);
+        logger.info("Supported payment modes: {}", supportedPaymentModes);
     }
 
     @When("the user submits a payment with the following details:")
     public void userSubmitsPaymentWithDetails(DataTable dataTable) {
         List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
         Map<String, String> payment = rows.get(0);
+        logger.info("Submitting payment with details: {}", payment);
         String cardNumber = payment.get("cardNumber");
         String cardHolder = payment.get("cardHolder");
         String expiry = payment.get("expiry");
@@ -85,6 +93,7 @@ public class PaymentGatewaySteps {
     @When("I make a payment with the following details:")
     public void iMakeAPaymentWithDetails(DataTable dataTable) {
         Map<String, String> payment = dataTable.asMaps(String.class, String.class).get(0);
+        logger.info("Initiating payment with details: {}", payment);
         String mode = payment.get("mode");
         String cardNumber = payment.get("cardNumber");
         String orderId = payment.get("orderId");
@@ -110,73 +119,86 @@ public class PaymentGatewaySteps {
 
     @When("the user tries to submit a payment without authentication")
     public void userSubmitsPaymentWithoutAuth() {
+        logger.warn("Attempted payment without authentication");
         responseStatusCode = 401;
         errorMessage = "Unauthorized";
     }
 
     @When("the user tries to submit a payment with invalid token")
     public void userSubmitsPaymentWithInvalidToken() {
+        logger.warn("Attempted payment with invalid token");
         responseStatusCode = 401;
         errorMessage = "Invalid or expired token";
     }
 
     @When("the user tries to submit a payment with valid token")
     public void userSubmitsPaymentWithValidToken() {
+        logger.info("Payment with valid token");
         responseStatusCode = 200;
         errorMessage = null;
     }
 
     @When("the user sends payment requests exceeding the rate limit")
     public void userExceedsRateLimit() {
+        logger.warn("Rate limit exceeded for payment requests");
         responseStatusCode = 429;
         errorMessage = "Too many requests";
     }
 
     @When("I make a payment with 3DS authentication and enter an incorrect OTP")
     public void iMakePaymentWith3DSIncorrectOTP() {
+        logger.info("3DS authentication failed due to incorrect OTP");
         responseStatusCode = 400;
         errorMessage = "3DS authentication failed";
     }
 
     @Given("a payment with orderId {word} is already successful")
     public void paymentAlreadySuccessful(String orderId) {
+        logger.info("Payment with orderId {} is already successful", orderId);
         paymentAlreadySuccessful = true;
     }
 
     @When("the payment gateway sends a duplicate webhook callback for orderId {word}")
     public void duplicateWebhookCallback(String orderId) {
+        logger.warn("Duplicate webhook callback received for orderId {}", orderId);
         duplicateWebhookReceived = true;
     }
 
     @When("I make a payment request with an invalid API key")
     public void paymentWithInvalidApiKey() {
+        logger.warn("Payment request made with an invalid API key");
         responseStatusCode = 401;
         errorMessage = "Unauthorized";
     }
 
     @When("the user cancels the payment during 3DS authentication")
     public void userCancels3DSPayment() {
+        logger.info("Payment cancelled by the user during 3DS authentication");
         cancelled = true;
     }
 
     @When("a network disconnect occurs during payment processing")
     public void networkDisconnectDuringPayment() {
+        logger.warn("Network disconnect occurred during payment processing");
         retryTriggered = true;
     }
 
     @When("I make a payment flagged as high-risk (e.g., abnormal amount or suspicious IP)")
     public void paymentFlaggedHighRisk() {
+        logger.warn("Payment flagged as high-risk");
         fraudFlagged = true;
     }
 
     @When("I retry a failed payment API call with the same idempotency key")
     public void retryWithIdempotencyKey() {
+        logger.info("Retrying failed payment with the same idempotency key");
         idempotencyKeyUsed = true;
         responseStatusCode = 200;
     }
 
     @When("the payment gateway does not respond within 30 seconds")
     public void paymentGatewayTimeout() {
+        logger.error("Payment gateway did not respond within the expected time frame");
         timeoutOccurred = true;
     }
 

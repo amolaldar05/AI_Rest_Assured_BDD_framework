@@ -86,7 +86,6 @@
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-testng</artifactId>
             <version>7.15.0</version>
-            <scope>test</scope>
         </dependency>
 </dependencies>
 </project>
